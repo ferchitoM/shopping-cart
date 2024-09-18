@@ -1,4 +1,5 @@
 <?php
+//Esta es la clase php para dar manejo a los productos del carrito
 class Item
 {
     public $id;
