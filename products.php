@@ -1,6 +1,5 @@
 <?php
 include "conexion.php"; //Conexión a la base de datos
-include 'carrito/Item.class.php'; //Clase Item para manejar los productos del carrito
 
 if (!isset($_SESSION)) session_start(); //Para manejar las variables de sesión
 ?>
@@ -23,36 +22,65 @@ if (!isset($_SESSION)) session_start(); //Para manejar las variables de sesión
         text-decoration: none;
         color: black;
     }
+
+    section {
+        display: flex;
+        gap: 2rem;
+        width: 50rem;
+        flex-wrap: wrap;
+    }
+
+    article {
+        border: 1px solid;
+        width: 15rem;
+        display: flex;
+        flex-direction: column;
+        line-height: 2rem;
+        padding: 1rem;
+    }
+
+    article div {
+        display: flex;
+        justify-content: space-between;
+    }
 </style>
 
 <body>
+
     <h1>
         Productos👔
         <!-- Cuando se haga click se muestra el carrito -->
         <button onclick="open_cart()">Ver carrito🛒</button>
     </h1>
 
-    <?php
-    $sql = "SELECT * FROM product";
-    if ($result = mysqli_query($conexion, $sql)) {
-        while ($item = mysqli_fetch_array($result)) { ?>
+    <section>
 
-            <article>
-                <span><?php echo $item["name"]; ?> - </span>
-                <span>$ <?php echo $item["price"]; ?></span>
+        <?php
+        //lista productos
+        $query_products =
+            "SELECT * 
+             FROM product 
+             ORDER BY name ASC";
+        $result_products = mysqli_query($conexion, $query_products);
 
-                <?php
-                //Si el producto no se encuentra en el carrito, se muestra el botón de comprar
-                //Cuando se haga click en comprar se envía el 'id' del producto al 'carrito/cart.php'
-                if (!isset($_SESSION['cart'][$item['id']])) { ?>
-                    <button><a href="carrito/cart.php?id=<?php echo $item["id"] ?>">Comprar🛍️</a></button>
-                <?php } ?>
-            </article>
-            <hr>
-    <?php
+        //Mostrar productos
+        if ($result_products) {
+            while ($item = mysqli_fetch_array($result_products)) { ?>
+
+                <article>
+                    <span><?php echo $item["name"]; ?></span>
+                    <span>
+                        <?php if ($item["price"] > 0) echo '$ ' . $item["price"];
+                        else echo 'Varios tamaños' ?>
+                    </span>
+                    <button><a href="product_detail.php?id=<?php echo $item["id"] ?>">Lo quiero 🛍️</a></button>
+                </article>
+        <?php
+            }
         }
-    }
-    ?>
+        ?>
+
+    </section>
 
     <!-- Colocar este código php al final de la página para que se muestre el carrito como un modal -->
     <!-- 'show_cart' contiene el código html y php del carrito -->

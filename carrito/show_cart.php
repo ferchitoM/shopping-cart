@@ -11,8 +11,9 @@
     <main>
         <?php
 
+        $_SESSION['total'] = 0;
+
         if (isset($_SESSION["cart"])) {
-            $_SESSION['total'] = 0;
             $_SESSION['subtotal'] = 0;
             $_SESSION['total_iva'] = 0;
 
